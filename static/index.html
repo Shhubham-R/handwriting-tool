@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handwriting Tool</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Handwriting Tool</h1>
+        <p class="sub">Read messy handwriting. Generate style-matched handwriting. Fully local.</p>
+      </div>
+      <div class="status-pill" id="healthPill">checking…</div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="read">Read Handwriting</button>
+      <button class="tab" data-tab="write">Write in My Style</button>
+      <button class="tab" data-tab="styles">Styles</button>
+      <button class="tab" data-tab="gallery">Preset Gallery</button>
+    </nav>
+
+    <section id="tab-read" class="tab-panel active">
+      <div class="panel">
+        <h2>OCR</h2>
+        <p class="hint">Drop a JPG or PNG. TrOCR runs locally; Surya is used as fallback if installed.</p>
+
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="ocrFile" accept="image/*" hidden />
+          <div>
+            <strong>Drop image here</strong>
+            <span>or click to browse</span>
+          </div>
+        </label>
+
+        <div class="preview-wrap hidden" id="previewWrap">
+          <img id="previewImage" alt="preview" />
+          <button class="ghost" id="clearPreviewBtn">Clear</button>
+        </div>
+
+        <div class="actions-row">
+          <button class="primary" id="ocrBtn">Transcribe</button>
+          <span class="progress-text" id="ocrProgress">Idle</span>
+        </div>
+
+        <div class="result hidden" id="ocrResult">
+          <div class="result-top">
+            <span id="ocrMeta">model: —</span>
+            <button class="ghost" id="copyOcrBtn">Copy</button>
+          </div>
+          <textarea id="ocrOutput" spellcheck="false"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-write" class="tab-panel">
+      <div class="panel">
+        <h2>Generate</h2>
+        <p class="hint">Every render is sampled fresh. Same letter, slightly different stroke each time.</p>
+
+        <label for="genInput">Text</label>
+        <textarea id="genInput" rows="4" maxlength="500" placeholder="Write something..."></textarea>
+
+        <div class="grid-two">
+          <div>
+            <label for="styleSelect">Style</label>
+            <select id="styleSelect"></select>
+          </div>
+          <div class="inline-note" id="styleInfo">Default style loaded.</div>
+        </div>
+
+        <div class="actions-row">
+          <button class="primary" id="genBtn">Generate</button>
+          <button class="ghost" id="regenBtn">Regenerate</button>
+          <span class="progress-text" id="genProgress">Idle</span>
+        </div>
+
+        <div class="result hidden" id="genResult">
+          <div class="result-top">
+            <span>SVG output</span>
+            <div class="actions-row compact">
+              <button class="ghost" id="downloadSvgBtn">Download SVG</button>
+              <button class="ghost" id="downloadPngBtn">Download PNG</button>
+            </div>
+          </div>
+          <div class="svg-stage" id="svgStage"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-styles" class="tab-panel">
+      <div class="panel">
+        <h2>Style Slots</h2>
+        <p class="hint">Save multiple local handwriting presets in <code>./styles/</code>. Best result: start from a built-in preset or create styles directly from your real handwriting images.</p>
+
+        <div class="grid-two">
+          <div>
+            <label for="styleName">Style name</label>
+            <input id="styleName" type="text" placeholder="doctor-notes" />
+          </div>
+          <div>
+            <label for="sampleText">Sample text note</label>
+            <input id="sampleText" type="text" placeholder="Loose slanted cursive" />
+          </div>
+        </div>
+
+        <div class="image-style-box">
+          <label for="styleImage">Build style from handwriting image</label>
+          <input id="styleImage" type="file" accept="image/*" />
+          <div class="actions-row">
+            <button class="primary" id="buildStyleBtn">Create Style From Image</button>
+            <span class="progress-text" id="styleImageProgress">Idle</span>
+          </div>
+        </div>
+
+        <div class="grid-three">
+          <div>
+            <label for="slant">Slant (degrees)</label>
+            <input id="slant" type="number" value="-6" step="0.5" />
+          </div>
+          <div>
+            <label for="strokeWidth">Stroke width</label>
+            <input id="strokeWidth" type="number" value="2.2" step="0.1" />
+          </div>
+          <div>
+            <label for="sizeScale">Size scale</label>
+            <input id="sizeScale" type="number" value="1.0" step="0.1" />
+          </div>
+          <div>
+            <label for="letterSpacing">Letter spacing</label>
+            <input id="letterSpacing" type="number" value="0" step="0.5" />
+          </div>
+          <div>
+            <label for="wordSpacing">Word spacing</label>
+            <input id="wordSpacing" type="number" value="16" step="0.5" />
+          </div>
+          <div>
+            <label for="baselineJitter">Baseline jitter</label>
+            <input id="baselineJitter" type="number" value="2.0" step="0.1" />
+          </div>
+          <div>
+            <label for="pressureVariance">Pressure variance</label>
+            <input id="pressureVariance" type="number" value="0.3" step="0.1" />
+          </div>
+          <div>
+            <label for="seedBias">Bias</label>
+            <input id="seedBias" type="number" value="0.5" step="0.1" />
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="primary" id="saveStyleBtn">Save Style</button>
+          <span class="progress-text" id="styleProgress">Idle</span>
+        </div>
+
+        <div class="styles-list" id="stylesList"></div>
+      </div>
+    </section>
+
+    <section id="tab-gallery" class="tab-panel">
+      <div class="panel">
+        <h2>Preset Gallery</h2>
+        <p class="hint">Preview built-in handwriting families and pick the one closest to your use case.</p>
+        <div class="gallery-grid" id="presetGallery"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
