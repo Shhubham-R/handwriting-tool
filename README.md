@@ -35,14 +35,11 @@ If you need exact person-level handwriting cloning for production or regulated u
 
 ## Screenshots
 
-### Home / Read Handwriting
-![Read Handwriting UI](assets/screenshots/Screenshot%20From%202026-04-04%2017-16-16.png)
-
-### Write in My Style
-![Generate UI](assets/screenshots/Screenshot%20From%202026-04-04%2017-16-50.png)
-
-### Preset Gallery
-![Preset Gallery UI](assets/screenshots/Screenshot%20From%202026-04-04%2017-17-04.png)
+<p align="center">
+  <img src="assets/screenshots/Screenshot%20From%202026-04-04%2017-16-16.png" alt="Read Handwriting UI" width="32%" />
+  <img src="assets/screenshots/Screenshot%20From%202026-04-04%2017-16-50.png" alt="Generate UI" width="32%" />
+  <img src="assets/screenshots/Screenshot%20From%202026-04-04%2017-17-04.png" alt="Preset Gallery UI" width="32%" />
+</p>
 
 ---
 
